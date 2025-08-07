@@ -5,6 +5,13 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +22,7 @@ import lombok.*;
 @Table(name = "socio")
 @EqualsAndHashCode(callSuper = true)
 @PrimaryKeyJoinColumn(name = "id_usuario")
+@EntityListeners(AuditingEntityListener.class)
 public class Socio extends Usuario{
 
     //no necesita fk ya que al ser herencia las genera automaticamente
@@ -56,4 +64,19 @@ public class Socio extends Usuario{
     @JoinColumn(name = "id_categoria", nullable = false, foreignKey = @ForeignKey(name = "FK_Socio_Categoria"))
     private Categoria categoria;
 
+    @CreatedBy
+    @Column(name = "Crea_Por")
+    private String creaPor;
+
+    @CreatedDate
+    @Column(name = "Fech_Creacion")
+    private LocalDate fechaCreacion;
+
+    @LastModifiedBy
+    @Column(name = "Modi_Por")
+    private String modificadoPor;
+
+    @LastModifiedDate
+    @Column(name = "Fech_Modificacion")
+    private LocalDate fechaModificacion;
 }

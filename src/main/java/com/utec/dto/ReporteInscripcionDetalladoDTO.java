@@ -17,7 +17,7 @@ public class ReporteInscripcionDetalladoDTO {
     private Integer totalCancelaciones;
     private List<ReporteInscripcionPorActividadDTO> reportePorActividad;
     
-    @Data
+   /* @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -27,5 +27,5 @@ public class ReporteInscripcionDetalladoDTO {
         private String tipoActividad;
         private Integer cantidadInscripciones;
         private Integer cantidadCancelaciones;
-    }
+    }*/
 } 

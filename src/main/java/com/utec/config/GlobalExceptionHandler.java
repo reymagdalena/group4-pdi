@@ -1,11 +1,14 @@
 package com.utec.config;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -68,9 +71,41 @@ public ResponseEntity<Map<String, String>> handleGenericError(Exception ex) {
     error.put("detalle", ex.getMessage());
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
 }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationErrors(MethodArgumentNotValidException ex) {
+       /* List<String> errores = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> "Campo '" + error.getField() + "': " + error.getDefaultMessage())
+                .collect(Collectors.toList());*/
+        List<String> errores = ex.getBindingResult().getFieldErrors().stream()
+                .map(err -> String.format("Campo '%s': %s", err.getField(), err.getDefaultMessage()))
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("mensaje", "Datos no válidos.");
+        response.put("errores", errores);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleConstraintViolation(ConstraintViolationException ex) {
+        List<String> errores = ex.getConstraintViolations()
+                .stream()
+                .map(error -> "Campo '" + error.getPropertyPath() + "': " + error.getMessage())
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("mensaje", "Error de validación");
+        response.put("errores", errores);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
     // Errores de validación de DTO
-    @ExceptionHandler(ConstraintViolationException.class)
+  /*  @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException ex) {
         List<String> errores = ex.getConstraintViolations().stream()
                 .map(cv -> String.format("Campo '%s': %s",
@@ -99,5 +134,15 @@ public ResponseEntity<Map<String, String>> handleGenericError(Exception ex) {
 
         return ResponseEntity.badRequest().body(body);
     }
+*/
+    //valida que la fecha no sea tan antigua
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Error de validacion");
+        response.put("detalle", ex.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
+
 
 }

@@ -68,12 +68,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/actividad/inscripcion").authenticated()
                         .requestMatchers("/api/v1/actividad/**").hasRole("ADMIN")
 
+
                         .requestMatchers(HttpMethod.POST, "/api/v1/inscripciones").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/inscripciones").authenticated()
                         .requestMatchers("/api/v1/inscripciones/reporte/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/inscripciones/actividades/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/todos-registros").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/pago").hasRole("ADMIN")
+                       // .requestMatchers("/api/v1/todos-registros").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/inscripciones/**").hasRole("ADMIN")
+
 
                         .requestMatchers("/api/v1/espacios/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/reservas").authenticated()
@@ -86,7 +88,9 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/v1/cuotas/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/modos-pago/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/pagos/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/pagos/cuota").hasRole("ADMIN")
+                       // .requestMatchers(HttpMethod.POST, "/api/v1/pagos/cuota/pagar").hasRole("ADMIN")
+                       // .requestMatchers(HttpMethod.PATCH, "/api/v1/pagos/cuota/modificar").hasRole("ADMIN")
 
 
                         .anyRequest().authenticated()

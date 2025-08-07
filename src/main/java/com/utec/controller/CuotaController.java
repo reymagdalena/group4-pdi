@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cuotas")
-@Tag(name = "Controlador de Cuotas", description = "Gestión de cuotas mensuales de los socios.")
+@Tag(name = "Controlador de Cuotas", description = "Gestión de las cuotas mensuales.")
 public class CuotaController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class CuotaController {
 
     @GetMapping
     @Operation(
-            summary = "Obtener todas las cuotas",
+            summary = "Obtener el valor de todas las cuotas de todos los meses",
             description = "Retorna una lista de todas las cuotas registradas en el sistema."
     )
     @ApiResponses(value = {
@@ -51,7 +51,7 @@ public class CuotaController {
 
     @GetMapping("/mes/{mes}")
     @Operation(
-            summary = "Buscar cuotas por mes",
+            summary = "Buscar el valor de la cuota de un mes",
             description = "Retorna una lista de cuotas filtradas por el mes especificado."
     )
     @ApiResponses(value = {

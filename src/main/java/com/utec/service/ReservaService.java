@@ -58,7 +58,7 @@ private ModoPagoRepository modoPagoRepository;
                 });
         // Validar rol del usuario logueado que no sea administrador
         if (usuarioReserva.getPerfil() != null && usuarioReserva.getPerfil().getIdPerfil() == 1) {
-            throw new AccessDeniedException("No se permite crear reservas con perfil administrador.");
+            throw new AccessDeniedException("No se permite crear reservas para usuario con perfil administrador.");
         }
 
         // obtener espacio
@@ -114,7 +114,6 @@ private ModoPagoRepository modoPagoRepository;
                 .fechCobro(null)//LocalDateTime.now()) PORQUE ESTA NOT NULL
                 .estado(estado) // por ejemplo: 1 = RESERVA ACTIVA
                 .modoPago(modoPago)
-             //   .idModoPago(reservaDto.getIdModoPago()) //mapear con entidad despues
                 .fechVtoSenia(fechaVtoSenia)
                 .build();
 

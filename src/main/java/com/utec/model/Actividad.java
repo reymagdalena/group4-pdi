@@ -3,6 +3,11 @@ package com.utec.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,7 +19,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "actividad")
-
+@EntityListeners(AuditingEntityListener.class)
 public class Actividad {
 
     @Id
@@ -52,7 +57,7 @@ public class Actividad {
     @Column(name = "requ_inscripcion")
     private boolean requ_inscripcion;
 
-    @NotNull(message = "La fecha de apertura no puede ser nula")
+   // @NotNull(message = "La fecha de apertura no puede ser nula")
     @Column(name = "fech_apertura_inscripcion")
     private LocalDate fech_apertura_inscripcion;
 
@@ -86,5 +91,20 @@ public class Actividad {
     @JoinColumn(name = "id_modo_pago")
     private ModoPago modoPago;
 
+    @CreatedBy
+    @Column(name = "Crea_Por")
+    private String creaPor;
+
+    @CreatedDate
+    @Column(name = "Fech_Creacion")
+    private LocalDate fechCreacion;
+
+    @LastModifiedBy
+    @Column(name = "Modi_Por")
+    private String modiPor;
+
+    @LastModifiedDate
+    @Column(name = "Fech_Modificacion")
+    private LocalDate fechModificacion;
 
 }

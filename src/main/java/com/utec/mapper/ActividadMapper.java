@@ -10,6 +10,7 @@ public class ActividadMapper {
 
     public ActividadDTO toDto(Actividad entity) {
         return ActividadDTO.builder()
+                .id(entity.getId())
                 .nombre(entity.getNombre())
                 .descripcion(entity.getDescripcion())
                 .objetivo(entity.getObjetivo())
@@ -19,6 +20,10 @@ public class ActividadMapper {
                 .fech_apertura_inscripcion(entity.getFech_apertura_inscripcion())
                 .costo(entity.getCosto())
                 .observaciones(entity.getObservaciones())
+                .idTipoActividad(entity.getTipoActividad().getIdTipoActividad())
+                .idEspacio(entity.getEspacio().getIdEspacio())
+                .idModoPago(entity.getModoPago().getId())
+                .idEstado(entity.getEstado().getIdestado())
                 .build();
 
     }

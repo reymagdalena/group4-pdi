@@ -59,7 +59,7 @@ public class UsuarioConcurreActividadController {
 
     @PostMapping("/inscripciones/reporte")
     @Operation(
-            summary = "Generar reporte detallado de inscripciones (RF 005-08)",
+            summary = "Generar reporte detallado de inscripciones",
             description = "Genera un reporte detallado de inscripciones y cancelaciones a actividades por rango de fechas con filtros adicionales."
     )
     @ApiResponses(value = {
@@ -83,7 +83,7 @@ public class UsuarioConcurreActividadController {
 
     @PostMapping("/inscripciones/reporte-tipo-actividad")
     @Operation(
-            summary = "Generar reporte por tipo de actividad (RF 005-09)",
+            summary = "Generar reporte por tipo de actividad",
             description = "Genera un reporte detallado de inscripciones y cancelaciones por tipo de actividad con filtros adicionales."
     )
     @ApiResponses(value = {
@@ -125,9 +125,9 @@ public class UsuarioConcurreActividadController {
         return new ResponseEntity<>(actividades, HttpStatus.OK);
     }
 
-    @GetMapping("/todos-registros")
+    @GetMapping("inscripciones")
     @Operation(
-            summary = "Obtener todos los registros de inscripciones",
+            summary = "Listar la información de las inscripciones, incluidos los pagos",
             description = "Retorna todos los registros de la tabla usuario_concurre_actividad."
     )
     @ApiResponses(value = {
@@ -149,7 +149,7 @@ public class UsuarioConcurreActividadController {
     @PatchMapping("/pago")
     @Operation(
             summary = "Registrar pago de actividad",
-            description = "Actualiza el estado de pago de una inscripción a actividad."
+            description = "Si el registro no existe registra el pago de una inscripción a actividad. Si se desea modificar se actualiza la entidad entera (monto se debe enviar el total que debe quedar)."
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -168,4 +168,5 @@ public class UsuarioConcurreActividadController {
         UsuarioConcurreActividadDTO actualizado = usuarioConcurreActividadService.actualizarPagoActividad(dto);
         return ResponseEntity.ok(actualizado);
     }
+
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class SocioDTO {
 
-   // private Integer idUsuario;
+   private Integer idUsuario;
     private String numeDocumento;
     private String primerNombre;
     private String segundoNombre;

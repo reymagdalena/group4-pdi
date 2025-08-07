@@ -46,5 +46,31 @@ public interface EspacioRepository  extends JpaRepository<Espacio, Integer> {
 """, nativeQuery = true)
    List<Espacio> buscarEspaciosDisponibles(LocalDateTime nuevaInicio, LocalDateTime nuevaFin,   Integer capacidadSolicitada);
 
+    @Query(value = """
+    SELECT * FROM espacio e
+    WHERE e.id_estado = 1
+      AND NOT EXISTS (
+        SELECT 1 FROM reserva r
+        WHERE r.id_espacio = e.id_espacio
+          AND r.id_estado = 1
+          AND (
+            (?1 < r.fech_hora_reserva + INTERVAL '1 hour' * r.duracion)
+            AND (?2 > r.fech_hora_reserva)
+          )
+      )
+      AND NOT EXISTS (
+        SELECT 1 FROM actividad a
+        WHERE a.id_espacio = e.id_espacio
+          AND a.id_estado = 1
+          AND (
+            (?1 < a.fech_hora_actividad + INTERVAL '1 hour' * a.duracion)
+            AND (?2 > a.fech_hora_actividad)
+          )
+      )
+""", nativeQuery = true)
+List<Espacio> buscarEspaciosDisponiblesSinCapacidad(LocalDateTime nuevaInicio, LocalDateTime nuevaFin);
+
+
+
 
 }

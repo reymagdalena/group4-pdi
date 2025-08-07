@@ -67,6 +67,7 @@ public class SocioService {
     }
 
     public SocioDTO crearSocio(SocioDTO socioDTO) throws NotFoundException, BadRequestException {
+
         // Validar que el perfil sea de socio
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(socioDTO.getIdTipoDocumento())
                 .orElseThrow(() -> new NotFoundException());
@@ -100,6 +101,13 @@ public class SocioService {
         if(!ciValidator.validateCi(socio.getNumeDocumento())){
             throw new BadRequestException("La cedula no es valida");
         }
+        //nuevo
+        System.out.println("Perfil: " + socio.getPerfil());
+        System.out.println("Subcomision: " + socio.getSubcomision());
+        System.out.println("Categoria: " + socio.getCategoria());
+        System.out.println("Estado: " + socio.getEstado());
+        System.out.println("TipoDocumento: " + socio.getTipoDocumento());
+
 
         socioRepository.save(socio);
         //envio de mail
@@ -143,15 +151,30 @@ public class SocioService {
 
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new EntityNotFoundException("No se encuentra el usuario con id "+idUsuario));
 
-        socioRepository.crearSocioDesdeUsuario(idUsuario,
-                categoria.getIdCategoria(),
-                dto.getDifAuditiva(),
-                dto.getUsoLengSenias(),
-                usuario.getEstado().getIdestado(),
-                LocalDate.now().getMonthValue(),
-                dto.getPagaHasta(),
-                subcomision.getIdSubcomision());
+        Optional<Socio> socioExistente = socioRepository.findById(idUsuario);
 
+        if (socioExistente.isPresent()) {
+            // Actualizar el socio existente
+            Socio socio = socioExistente.get();
+            socio.setCategoria(categoria);
+            socio.setDifAuditiva(dto.getDifAuditiva());
+            socio.setUsoLengSenias(dto.getUsoLengSenias());
+            socio.setEstadoSocio(usuario.getEstado());
+            socio.setPagaDesde(LocalDate.now().getMonthValue());
+            socio.setPagaHasta(dto.getPagaHasta());
+            socio.setSubcomision(subcomision);
+            socioRepository.save(socio);
+
+        } else {
+            socioRepository.crearSocioDesdeUsuario(idUsuario,
+                    categoria.getIdCategoria(),
+                    dto.getDifAuditiva(),
+                    dto.getUsoLengSenias(),
+                    usuario.getEstado().getIdestado(),
+                    LocalDate.now().getMonthValue(),
+                    dto.getPagaHasta(),
+                    subcomision.getIdSubcomision());
+        }
         mensajesEmail.mensajeRegistroUsuario(usuario.getCorreo());
     }
 

@@ -1,5 +1,6 @@
 package com.utec.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class EspacioDTO {
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Id se genera automaticamente.")
     private Integer idEspacio;
     @NotBlank
     @Size(min = 1, max = 50)
@@ -42,5 +44,6 @@ public class EspacioDTO {
     @Pattern(regexp = "^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñü,\\.\\- ]*$", message = "Observaciones debe contener letras y números")
     private String observaciones;
 
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Estado por defecto inactivo")
     private Integer idEstado;
 }

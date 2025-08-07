@@ -11,6 +11,7 @@ public class SocioPagaCuotaMapper {
     //de entidad a DTO
     public SocioPagaCuotaDTO toDTO(SocioPagaCuota entity){
         return SocioPagaCuotaDTO.builder()
+                .idUsuario(entity.getId().getIdUsuario())
                 .idCuota(entity.getCuota().getId())
                 .fechaCobro(entity.getFechCobro())
                 .modoPago(entity.getModoPago().getId())

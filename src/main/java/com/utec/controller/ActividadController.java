@@ -124,7 +124,8 @@ public class ActividadController {
     @PutMapping("/actividad/{id}")
     @Operation(
             summary = "Actualizar actividad",
-            description = "Actualiza una actividad existente por su ID. Solo administradores pueden actualizar actividades."
+            description = "Actualiza una actividad existente por su ID. Solo administradores pueden actualizar actividades. La actualizacion se realiza sobre la entidad completa, se deben pasar todos los campos aunque no se modifiquen." +
+                    "No se permite cambiar el nombre."
     )
     @ApiResponses(value = {
             @ApiResponse(

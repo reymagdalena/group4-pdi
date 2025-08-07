@@ -36,7 +36,13 @@ public class EspacioService {
 
     @Auditable(operacion = "Crear espacio")
     public EspacioDTO crearEspacio(EspacioDTO dto) {
+        if (dto.getIdEspacio() != null) {
+            throw new IllegalArgumentException("El ID espacio no debe ser enviado");
+        }
 
+        if (dto.getIdEstado() != null) {
+            throw new IllegalArgumentException("El ID estado no debe ser enviado. Por defecto se crea inactivo.");
+        }
         Espacio espacio = espacioMapper.toEntity(dto);
 
         Estado estado = estadoRepository.findById(2) //por defecto se crea inactivo

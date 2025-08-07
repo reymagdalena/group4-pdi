@@ -1,9 +1,6 @@
 package com.utec.repository;
 
-import com.utec.dto.ReporteInscripcionDTO;
-import com.utec.dto.ReporteInscripcionDetalladoDTO;
-import com.utec.dto.ReportePorTipoActividadDTO;
-import com.utec.dto.ReporteTipoActDTO;
+import com.utec.dto.*;
 import com.utec.model.UsuarioConcurreActividad;
 import com.utec.model.UsuarioConcurreActividadId;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +14,7 @@ import java.util.Optional;
 public interface UsuarioConcurreActividadRepository extends JpaRepository<UsuarioConcurreActividad, UsuarioConcurreActividadId> {
     boolean existsByUsuarioIdAndActividadId(Integer id_usuario,Integer id_actividad);
     Optional<UsuarioConcurreActividad> findByUsuarioIdAndActividadId(Integer id_usuario, Integer id_actividad);
+    boolean existsByUsuarioIdAndActividadIdAndEstadoIdestado(Integer id_usuario, Integer id_actividad, Integer id_estado);
     
     @Query("""
     SELECT new com.utec.dto.ReporteInscripcionDTO(
@@ -56,7 +54,7 @@ public interface UsuarioConcurreActividadRepository extends JpaRepository<Usuari
 
     // Nueva consulta para reporte detallado por rango de fechas y actividades
     @Query("""
-    SELECT new com.utec.dto.ReporteInscripcionDetalladoDTO$ReporteInscripcionPorActividadDTO(
+    SELECT new com.utec.dto.ReporteInscripcionPorActividadDTO(
         a.id,
         a.nombre,
         ta.tipo,
@@ -71,7 +69,7 @@ public interface UsuarioConcurreActividadRepository extends JpaRepository<Usuari
     GROUP BY a.id, a.nombre, ta.tipo
     ORDER BY a.nombre
     """)
-    List<ReporteInscripcionDetalladoDTO.ReporteInscripcionPorActividadDTO> obtenerReporteDetalladoPorFechas(
+    List<ReporteInscripcionPorActividadDTO> obtenerReporteDetalladoPorFechas(
         @Param("fechaDesde") LocalDate fechaDesde,
         @Param("fechaHasta") LocalDate fechaHasta,
         @Param("idActividades") List<Integer> idActividades
@@ -102,5 +100,7 @@ public interface UsuarioConcurreActividadRepository extends JpaRepository<Usuari
     ORDER BY a.id
     """)
     List<Integer> obtenerActividadesDisponibles();
+
+    int countByActividadIdAndEstadoIdestado(Integer actividadId, Integer idestado);
 
 }

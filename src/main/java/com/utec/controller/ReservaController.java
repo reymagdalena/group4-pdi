@@ -87,7 +87,7 @@ public class ReservaController {
 
     @GetMapping
     @Operation(
-            summary = "Listar reservas",
+            summary = "Listar información de reservas y su pago",
             description = "Retorna una lista de todas las reservas. Solo administradores pueden ver todas las reservas."
     )
     @ApiResponses(value = {

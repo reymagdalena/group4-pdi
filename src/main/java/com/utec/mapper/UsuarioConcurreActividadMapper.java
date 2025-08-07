@@ -28,6 +28,7 @@ public class UsuarioConcurreActividadMapper {
                 .montCobrado(dto.getMontCobrado())
                 .asistencia(dto.getAsistencia())//cambio para pagos
                 .pagoTicket(dto.getPagoTicket())//cambio para pagos
+
                 .build();
     }
 }

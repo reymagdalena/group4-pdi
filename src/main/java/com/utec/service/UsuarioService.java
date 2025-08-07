@@ -139,9 +139,10 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No se encuentra el usuario con id "+ id));
 
         Perfil perfilSocio = perfilRepository.findById(3).orElseThrow(() -> new EntityNotFoundException("No se encuentra el perfil Socio"));
-        if(perfilSocio.getNombre().equalsIgnoreCase("Socio")){
+
+       /* if(perfilSocio.getNombre().equalsIgnoreCase("Socio")){
             throw new EntityNotFoundException("No se encuentra el perfil Socio");
-        }
+        }*/
 
         usuario.setPerfil(perfilSocio);
 

@@ -8,6 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -21,22 +26,22 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "usuario_concurre_actividad")
-
+@EntityListeners(AuditingEntityListener.class)
 public class UsuarioConcurreActividad {
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "id_usuario")
-    private Usuario usuario;
+        @Id
+        @ManyToOne
+        @JoinColumn(name = "id_usuario")
+        private Usuario usuario;
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "id_actividad")
-    private Actividad actividad;
+        @Id
+        @ManyToOne
+        @JoinColumn(name = "id_actividad")
+        private Actividad actividad;
 
-    @ManyToOne
-    @JoinColumn(name = "id_estado")
-    private Estado estado;
+        @ManyToOne
+        @JoinColumn(name = "id_estado")
+        private Estado estado;
 
 
     private Date fechCobro;
@@ -54,5 +59,19 @@ public class UsuarioConcurreActividad {
     @Column(name = "pago_ticket")
     private  Boolean pagoTicket;
 
+    @CreatedBy
+    @Column(name = "Crea_Por")
+    private String creaPor;
 
+    @CreatedDate
+    @Column(name = "Fech_Creacion")
+    private LocalDate fechaCreacion;
+
+    @LastModifiedBy
+    @Column(name = "Modi_Por")
+    private String modificadoPor;
+
+    @LastModifiedDate
+    @Column(name = "Fech_Modificacion")
+    private LocalDate fechaModificacion;
 }

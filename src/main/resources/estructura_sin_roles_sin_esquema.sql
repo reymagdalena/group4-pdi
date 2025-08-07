@@ -419,3 +419,27 @@ ALTER TABLE auditoria ADD CONSTRAINT auditoria_usuario_check
             AND LENGTH(Usuario) <= 50
         );
 
+--Atributos de auditoria ACTIVIDAD:
+ALTER TABLE actividad ADD COLUMN Crea_Por varchar (20);
+ALTER TABLE actividad ADD COLUMN Fech_Creacion DATE;
+ALTER TABLE actividad ADD COLUMN Modi_Por varchar (20);
+ALTER TABLE actividad ADD COLUMN Fech_Modificacion DATE;
+
+--Atributos de auditoria SOCIO:
+ALTER TABLE socio ADD COLUMN Crea_Por varchar (20);
+ALTER TABLE socio ADD COLUMN Fech_Creacion DATE;
+ALTER TABLE socio ADD COLUMN Modi_Por varchar (20);
+ALTER TABLE socio ADD COLUMN Fech_Modificacion DATE;
+
+--Atributos de auditoria SOCIOPAGACUOTA:
+ALTER TABLE socio_paga_cuota ADD COLUMN Crea_Por varchar (20);
+ALTER TABLE socio_paga_cuota ADD COLUMN Fech_Creacion DATE;
+ALTER TABLE socio_paga_cuota ADD COLUMN Modi_Por varchar (20);
+ALTER TABLE socio_paga_cuota ADD COLUMN Fech_Modificacion DATE;
+
+--Atributos de auditoria USUARIO CONCURRE ACTIVIDAD:
+ALTER TABLE usuario_concurre_actividad ADD COLUMN Crea_Por varchar (20);
+ALTER TABLE usuario_concurre_actividad ADD COLUMN Fech_Creacion DATE;
+ALTER TABLE usuario_concurre_actividad ADD COLUMN Modi_Por varchar (20);
+ALTER TABLE usuario_concurre_actividad ADD COLUMN Fech_Modificacion DATE;
+

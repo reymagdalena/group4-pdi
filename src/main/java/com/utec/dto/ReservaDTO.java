@@ -1,10 +1,7 @@
 package com.utec.dto;
 
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +25,7 @@ private Integer idReserva;
     private Integer idEspacio;
 
     @NotNull(message = "La fecha y hora de reserva es obligatoria")
+    @FutureOrPresent(message = "No se puede hacer una reserva para una fecha pasada")
     private LocalDateTime fechHoraReserva;
 
     @NotNull(message = "La duración es obligatoria")

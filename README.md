@@ -2,7 +2,7 @@
 
 ## 📋 Descripción del Proyecto
 
-**PDI (Proyecto de Desarrollo Institucional)** es una aplicación web desarrollada en Spring Boot que gestiona las actividades, reservas de espacios, usuarios y pagos de una institución educativa. El sistema permite administrar actividades institucionales, reservar espacios, gestionar usuarios con diferentes perfiles y manejar el sistema de pagos y cuotas.
+**PDI (Proyecto de Desarrollo Institucional)** es una aplicación web desarrollada en Spring Boot que gestiona las actividades, reservas de espacios, usuarios y pagos de la Asociación de Sordos del Uruguay. El sistema permite administrar actividades institucionales, reservar espacios, gestionar usuarios con diferentes perfiles y manejar el sistema de pagos y cuotas.
 
 ### 🎯 Funcionalidades Principales
 
@@ -49,6 +49,141 @@ src/main/java/com/utec/
 ├── util/            # Utilidades
 └── auditoria/       # Sistema de auditoría
 ```
+
+**Diagrama de arquitectura**:
+```text
++------------------------+
+|  Capa de Presentación  |
+|------------------------|
+| - Controllers REST     |
+| - DTOs                 |
+| - Validaciones         |
++-----------+------------+
+            |
+            v
++------------------------+
+|   Capa de Servicios    |
+|------------------------|
+| - Lógica de negocio    |
+|       (services)       |
+| - Transacciones        |
+|                        |
++-----------+------------+
+            |
+            v
++------------------------+
+| Capa de Persistencia   |
+|------------------------|
+| - Repositorios JPA     |
+| - Entidades            |
+| - Relaciones           |
++-----------+------------+
+            |
+            v
++------------------------+
+|     Base de Datos      |
+|------------------------|
+| - Tablas relacionales  |
+|                        |
++------------------------+
+```
+**Relaciones entre entidades**:
+
+🔗 Herencia
+
+- Usuario → Socio: Relación 1:1
+
+- Usuario → Administrador: Relación 1:1
+
+👤 Usuario
+
+- Estado: Muchos usuarios → Un estado
+
+- TipoDocumento: Muchos usuarios → Un tipo de documento
+
+- Perfil: Muchos usuarios → Un perfil
+
+- Teléfono: Un usuario → Muchos teléfonos
+
+🧑‍🤝‍🧑 Socio
+
+- Estado: Muchos socios → Un estado (estado_socio)
+
+- Subcomisión: Muchos socios → Una subcomisión
+
+- Categoría: Muchos socios → Una categoría
+
+- SocioPagaCuota: Un socio → Muchos pagos de cuota
+
+🎯 Actividad
+
+- Estado: Muchas actividades → Un estado
+
+- Usuario: Muchas actividades → Un usuario (creada_por)
+
+- TipoActividad: Muchas actividades → Un tipo de actividad
+
+- Espacio: Muchas actividades → Un espacio (opcional, se_realiza_en)
+
+- ModoPago: Muchas actividades → Un modo de pago (opcional, forma_pago)
+
+- UsuarioConcurreActividad: Una actividad → Muchas inscripciones
+
+🗂️ TipoActividad
+
+- Estado: Muchos tipos de actividad → Un estado
+
+🧾 UsuarioConcurreActividad
+
+- Usuario: Muchas inscripciones → Un usuario
+
+- Actividad: Muchas inscripciones → Una actividad
+
+- Estado: Muchas inscripciones → Un estado
+
+📅 Reserva
+
+- Usuario: Muchas reservas → Un usuario (reservada_por)
+
+- Espacio: Muchas reservas → Un espacio
+
+- Estado: Muchas reservas → Un estado
+
+- ModoPago: Muchas reservas → Un modo de pago (forma_pago)
+
+🏢 Espacio
+
+- Estado: Muchos espacios → Un estado
+
+💳 SocioPagaCuota
+
+- Cuota: Muchos pagos → Una cuota
+
+- ModoPago: Muchos pagos → Un modo de pago
+
+🛡️ Perfil y Funcionalidad
+
+- Perfil → Estado: Muchos perfiles → Un estado
+
+- Perfil → PerfilAccedeFuncionalidad: Un perfil → Muchos accesos a funcionalidades
+
+- Funcionalidad → Estado: Muchas funcionalidades → Un estado
+
+- Funcionalidad → PerfilAccedeFuncionalidad: Una funcionalidad → Muchos perfiles que la acceden
+
+- PerfilAccedeFuncionalidad → Estado: Muchas relaciones perfil-funcionalidad → Un estado
+
+## 🔐 Autenticación y Seguridad
+Se utiliza Spring Security con autenticación basada en JWT (JSON Web Tokens) para proteger el acceso a los endpoints de la API.
+
+- Se utiliza JWT token en vez de las sesiones.
+- La contraseña está cifrada para mayor seguridad.
+- La autorización está asignada por los roles y estos se obtienen automáticamente del token de cada usuario.
+- Hay endpoints que son accesibles para cualquier rol y otros que son restringidos.
+#### Manejo de errores asociados:
+- 401 Unauthorized: Usuario no autenticado
+- 403 Forbidden: Usuario sin permisos suficientes
+
 
 ## 🚀 Instalación y Configuración
 
@@ -105,13 +240,13 @@ src/main/java/com/utec/
    - **Actuator**: http://localhost:8080/actuator
 
 ## 🔐 Credenciales de Prueba
-
+(Es necesario ejecutar primero el .sql que se encuentra en resources)
 ### Usuario Administrador
 - **Email**: admin@asur.com
 - **Contraseña**: admin1234
 - **Perfil**: Administrador
 
-### Usuario Regular
+### Usuario 
 - **Email**: valeria@asur.com
 - **Contraseña**: user1234
 - **Perfil**: Usuario
@@ -268,19 +403,33 @@ Para ejecutar las pruebas unitarias:
 - [x] Para el módulo Funcionalidades y su relación con el acceso de Perfiles, quedan disponibles listados para que el frontend pueda filtrar y determinar el acceso.
 - [x] La validación de la cédula Uruguaya utiliza la librería de Fabian Delgado y se puede encontrar en el siguiente enlace: https://github.com/fabdelgado/ciuy
 - [x] Los listados de Usuarios, Perfiles, Actividades no aplican los filtros, los mismos los aplicará el frontend.
+
+### ✅ Entrega etapa Examen - Mejoras y despliegue
+**📅 Fecha**: 07 de agosto
+
+**Comentarios sobre la entrega para esta instancia:**
+- [x] Se agregan controles para mejorar la validación fechas en el módulo de actividades.
+- [x] Se agregan controles de meses y datos en el módulo de pagos de cuota.
+- [x] Se mejoran y agregan excepciones para devolver más información.
+- [x] Se agregan controles en los listados para mejorar los response.
+- [x] Se modifica dockerfile y se realiza el despliegue en railway desde un repositorio git.
+- [x] Se agrega nuevo endpoint en el controlador de pagos de cuotas, para listar de los pagos de cuotas. Los datos de los pagos de actividades y reservas, se encuentran disponibles en los listados de esos controladores.
+
+
 ## 📊 Estado del Proyecto
 
 - **Estado**: ✅ Completado
-- **Última actualización**: Junio 2024
-- **Versión**: 1.0.0
+- **Última actualización**: Agosto 2025
 - **Equipo**: Grupo 4 - UTEC
-- 
-## 📞 Contacto
 
-- **Equipo**: Grupo 4 - UTEC
-- **Email**: [email del equipo]
+
+
+## Repositorio y despliegue:
+
 - **Repositorio**: https://git.utec.edu.uy/4group/pdi
-
+- **Deployment Railway**: group4-pdi-production.up.railway.app
+- **Swagger servidor Railway**: https://group4-pdi-production.up.railway.app/swagger-ui/index.html
+- **Swagger para ejecutar local**: http://localhost:8080/swagger-ui/index.html
 ---
 
 **Desarrollado con ❤️ por el Grupo 4 de UTEC**

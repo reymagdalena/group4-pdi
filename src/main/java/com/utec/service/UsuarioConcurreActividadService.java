@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,7 +52,7 @@ public class UsuarioConcurreActividadService {
     }
 
     public void inscribirUsuario(Integer id_usuario, Integer id_actividad, UsuarioConcurreActividadDTO dto){
-        if(usuarioConcurreActividadRepository.existsByUsuarioIdAndActividadId(id_usuario, id_actividad)){
+        if(usuarioConcurreActividadRepository.existsByUsuarioIdAndActividadIdAndEstadoIdestado(id_usuario, id_actividad, 1)){
             throw new IllegalArgumentException("El usuario ya está inscrito en esta actividad.");
         }
 
@@ -61,11 +62,29 @@ public class UsuarioConcurreActividadService {
         Actividad actividad = actividadRepository.findById(id_actividad)
                 .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
 
+        //Validar que la actividad requiere inscripción
+        if (!actividad.isRequ_inscripcion()) {
+            throw new IllegalArgumentException("La actividad no requiere inscripción.");
+        }
+
+
+        //Validar que esté en período de inscripción
+        LocalDate hoy = LocalDate.now();
+        if (actividad.getFech_apertura_inscripcion() != null &&
+                actividad.getFech_apertura_inscripcion().isAfter(hoy)) {
+            throw new IllegalArgumentException("La inscripción aún no está habilitada para esta actividad.");
+        }
+        if (actividad.getFech_hora_actividad().toLocalDate().isBefore(hoy)) {
+            throw new IllegalArgumentException("No se puede inscribir a una actividad ya realizada.");
+        }
+
+
         UsuarioConcurreActividad entidad = usuarioConcurreActividadMapper.toEntity(dto, usuario, actividad);
         Estado estadoActivo = estadoRepository.findById(1)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estado activo no encontrado"));
         entidad.setEstado(estadoActivo);
-        
+
+       validarCuposActividad(actividad);
         usuarioConcurreActividadRepository.save(entidad);
 
         logger.info("Inscribiendo a usuario a la actividad: {}",actividad.getNombre());
@@ -73,19 +92,21 @@ public class UsuarioConcurreActividadService {
         logger.debug("Detalles: {}",dto);
     }
 
-    public void cancelarInscripcion(Integer id_usuario,Integer id_actividad, boolean avtivar){
+    public void cancelarInscripcion(Integer id_usuario,Integer id_actividad, boolean activar){
         UsuarioConcurreActividad inscripcion = usuarioConcurreActividadRepository
                 .findByUsuarioIdAndActividadId(id_usuario,id_actividad)
                 .orElseThrow(() -> new IllegalArgumentException("Inscripción no encontrado"));
 
-        Integer idEstado = avtivar ? 1 : 2;
+        Integer idEstado = activar ? 1 : 2;
         logger.info("Cancelando inscripcion a la actividad: {}",inscripcion.getActividad().getNombre());
         logger.info("Detalle de usuario: {}",inscripcion.getUsuario().getCorreo());
 
-        if(!avtivar && inscripcion.getEstado().getIdestado() == 2){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"El ususario ya está inactivo");
+        if(!activar && inscripcion.getEstado().getIdestado() == 2){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"La inscripcion ya esta inactiva");
         }
-
+        if (activar && inscripcion.getEstado().getIdestado() == 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La inscripción ya esta activa.");
+        }
         Estado estado = estadoRepository.findById(idEstado)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estado no encontrado"));
 
@@ -141,7 +162,7 @@ public class UsuarioConcurreActividadService {
         LocalDate fechaHasta = filtro.getFechaHasta().toLocalDate();
         
         // Obtener reporte detallado por actividad
-        List<ReporteInscripcionDetalladoDTO.ReporteInscripcionPorActividadDTO> reportePorActividad = 
+        List<ReporteInscripcionPorActividadDTO> reportePorActividad =
             usuarioConcurreActividadRepository.obtenerReporteDetalladoPorFechas(
                 fechaDesde, 
                 fechaHasta, 
@@ -214,4 +235,45 @@ public class UsuarioConcurreActividadService {
         return mapper.toDto(entidad);
     }
 
+    /*//nueva version para sumar montos
+    @Transactional
+    public UsuarioConcurreActividadDTO actualizarPagoActividad(UsuarioConcurreActividadDTO dto) {
+        // Crear la clave compuesta
+        UsuarioConcurreActividadId id = new UsuarioConcurreActividadId(dto.getIdUsuario(), dto.getIdActividad());
+
+        // Buscar el registro existente
+        UsuarioConcurreActividad entidad = usuarioConcurreActividadRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No se encontró la relación usuario-actividad"));
+
+        // Acumular el pago en vez de sobrescribirlo
+        BigDecimal montoActual = entidad.getMontCobrado() != null ? entidad.getMontCobrado() : BigDecimal.ZERO;
+        BigDecimal nuevoMonto = dto.getMontCobrado() != null ? dto.getMontCobrado() : BigDecimal.ZERO;
+        entidad.setMontCobrado(montoActual.add(nuevoMonto));
+
+        // Actualizar otros campos si corresponde
+        entidad.setFechCobro(dto.getFechCobro());
+        entidad.setPagoTicket(dto.getPagoTicket());
+        entidad.setAsistencia(dto.getAsistencia());
+
+        // Guardar y retornar
+        usuarioConcurreActividadRepository.save(entidad);
+        return mapper.toDto(entidad);
+    }
+*/
+
+    public void validarCuposActividad(Actividad actividad) {
+        Integer capacidadMaxima = actividad.getEspacio().getCapacidadMaxima();
+
+        int inscripcionesActivas = usuarioConcurreActividadRepository
+                .countByActividadIdAndEstadoIdestado(actividad.getId(), 1); // 1 = estado activo
+
+        System.out.println("DEBUG CUPOS:");
+        System.out.println("Actividad ID: " + actividad.getId());
+        System.out.println("Inscripciones activas: " + inscripcionesActivas);
+        System.out.println("Capacidad máxima: " + capacidadMaxima);
+
+        if (inscripcionesActivas >= capacidadMaxima) {
+            throw new IllegalArgumentException("No hay cupos disponibles en el espacio asignado para esta actividad.");
+        }
+    }
 }

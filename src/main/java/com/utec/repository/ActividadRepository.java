@@ -16,7 +16,7 @@ public interface ActividadRepository extends JpaRepository<Actividad, Integer> {
     "LEFT JOIN a.tipoActividad " +
     "LEFT JOIN a.espacio " +
     "LEFT JOIN a.modoPago " +
-    "WHERE a.estado.idestado = 1 AND a.fech_hora_actividad > CURRENT_DATE")
+    "WHERE a.estado.idestado = 1 AND a.fech_hora_actividad > CURRENT_DATE and a.fech_apertura_inscripcion>=CURRENT_DATE")
 List<Actividad> findActividadesActivasParaInscripcionWithRelations();
 //    @Query("SELECT a FROM Actividad a WHERE a.estado.idestado = 1 AND a.fech_hora_actividad > CURRENT_DATE")
 //    List<Actividad> findActividadesActivasParaInscripcion();

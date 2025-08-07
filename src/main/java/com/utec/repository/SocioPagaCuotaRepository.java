@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface SocioPagaCuotaRepository extends JpaRepository<SocioPagaCuota, SocioPagaCuotaId> {
 
    Optional<SocioPagaCuota> findById(SocioPagaCuotaId id);
+  // Optional<SocioPagaCuota> findBySocioIdAndCuotaId(Long socioId, Long cuotaId);
 
 
 }
