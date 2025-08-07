@@ -21,8 +21,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("PDI - API de Gestión Institucional")
-                        .description("API REST para el sistema de gestión de actividades, reservas, usuarios y pagos de la institución. " +
-                                "Esta API permite administrar actividades institucionales, reservar espacios, gestionar usuarios " +
+                        .description("API REST que permite administrar actividades institucionales, reservar espacios, gestionar usuarios " +
                                 "con diferentes perfiles y manejar el sistema de pagos y cuotas.\n\n" +
                                 "## Autenticación\n" +
                                 "La mayoría de endpoints requieren autenticación JWT. Para obtener un token:\n" +
