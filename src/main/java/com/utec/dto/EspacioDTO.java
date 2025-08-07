@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class EspacioDTO {
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Id se genera automaticamente.")
+   @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Id se genera automaticamente.")
     private Integer idEspacio;
     @NotBlank
     @Size(min = 1, max = 50)

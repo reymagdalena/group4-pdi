@@ -96,8 +96,9 @@ public class EspacioService {
         espacio.setObservaciones(dto.getObservaciones());
 
 
-        Estado nuevoEstado = estadoRepository.findById(dto.getIdEstado())
+        Estado nuevoEstado = estadoRepository.findById(espacio.getEstado().getIdestado()) //(dto.getIdEstado())
                 .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado con id: " + dto.getIdEstado()));
+
         espacio.setEstado(nuevoEstado);
 
         espacioRepository.save(espacio);
