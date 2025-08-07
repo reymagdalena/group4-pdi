@@ -31,14 +31,13 @@ public class SwaggerConfig {
                                 "## Roles Disponibles\n" +
                                 "- **ADMINISTRADOR**: Acceso completo a todas las funcionalidades\n" +
                                 "- **USUARIO**: Acceso limitado a funcionalidades básicas\n" +
-                                "- **SOCIO**: Acceso parcial con beneficios especiales\n\n" +
+                                "- **SOCIO**: Acceso parcial a funcionalidades básicas\n\n" +
                                 "## Credenciales de Prueba\n" +
                                 "- **Admin**: admin@asur.com / admin1234\n" +
                                 "- **Usuario**: valeria@asur.com / user1234")
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("Grupo 4 - UTEC")
-                                .email("grupo4@utec.edu.uy")
                                 .url("https://git.utec.edu.uy/4group/pdi"))
                         .license(new License()
                                 .name("MIT License")
